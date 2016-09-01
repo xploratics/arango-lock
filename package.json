@@ -1,0 +1,33 @@
+{
+  "name": "arango-lock",
+  "version": "0.1.0",
+  "description": "\u0016Implements locking using arango database",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xploratics/arango-lock.git"
+  },
+  "keywords": [
+    "lock",
+    "locking",
+    "arango",
+    "arangodb",
+    "synchronization",
+    "sync"
+  ],
+  "author": "Dany Laporte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xploratics/arango-lock/issues"
+  },
+  "homepage": "https://github.com/xploratics/arango-lock#readme",
+  "dependencies": {
+    "shortid": "^2.2.6"
+  },
+  "devDependencies": {
+    "jasmine": "^2.5.0"
+  }
+}
