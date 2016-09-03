@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var shortid = require('shortid');
 var util = require('arango-util');
 
-exports.lock = function (options) {
+exports.acquire = function (options) {
     assert.ok(options, 'options is required');
 
     var expiration = options.expiration || 5000;
@@ -54,7 +54,7 @@ exports.lock = function (options) {
     }
 
     function updateLockInDb(action) {
-        return server.transaction({ write: ['locks'] }, func, { action, name, lockId });
+        return server.transaction({ write: ['locks'] }, func, { action, name, lockId, expiration });
     }
 
     var promise = new Promise(acquireLock);
@@ -68,7 +68,7 @@ exports.lock = function (options) {
 function dbFunc(params) {
     var locks = require('org/arangodb').db.locks;
     var lock = locks.documents([params.name]).documents[0];
-    var isExpired = lock && (new Date() - lock.date).valueOf() >= params.expiration;
+    var isExpired = lock && (new Date() - new Date(lock.date)) >= params.expiration;
     var isValid = lock && lock.lockId === params.lockId;
 
     function checkErrors() {
@@ -79,17 +79,20 @@ function dbFunc(params) {
     switch (params.action) {
         case 'acquire':
             if (lock && !isExpired) return false;
-            if (!lock) lock = { _key: params.name };
 
-            lock.lockId = params.lockId
-            lock.pingDate = new Date();
-            locks.save(lock);
+            var doc = { lockId: params.lockId, date: new Date() };
+
+            if (lock) {
+                locks.replace(params.name, doc);
+            } else {
+                doc._key = params.name;
+                locks.save(doc);
+            }
             return true;
 
         case 'hearBeat':
             checkErrors();
-            lock.pingDate = new Date();
-            locks.save(lock);
+            locks.replace(params.name, { date: new Date() });
             return true;
 
         case 'release':
