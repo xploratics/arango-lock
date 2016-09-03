@@ -1,3 +1,4 @@
+var assert = require('assert');
 var debug = require('debug')('arango-lock');
 var Promise = require('bluebird');
 var shortid = require('shortid');
@@ -6,7 +7,7 @@ var util = require('arango-util');
 exports.lock = function (options) {
     assert.ok(options, 'options is required');
 
-    var expiration = options.expiration || 60000;
+    var expiration = options.expiration || 5000;
     var func = String(dbFunc);
     var lockId = shortid();
     var name = options.name;
@@ -29,7 +30,7 @@ exports.lock = function (options) {
                     resolve();
                 } else {
                     debug(`lock '${name}' is in used, will reattempt to acquire the lock.`);
-                    setTimeout(() => acquireLock(resolve, reject), expiration / 2)
+                    setTimeout(() => acquireLock(resolve, reject), 500);
                 }
             });
     }
@@ -42,12 +43,18 @@ exports.lock = function (options) {
     }
 
     function releaseLock() {
-        ping = false;
-        return updateLockInDb('release');
+        if (ping) {
+            debug(`attempting to release lock '${name}'`);
+            ping = false;
+            return updateLockInDb('release').then(function (v) {
+                debug(`lock '${name}' released`);
+                return v;
+            });
+        }
     }
 
     function updateLockInDb(action) {
-        return server.collection('locks').transaction({ write: ['locks'] }, func, { action, name, lockId });
+        return server.transaction({ write: ['locks'] }, func, { action, name, lockId });
     }
 
     var promise = new Promise(acquireLock);
@@ -61,7 +68,7 @@ exports.lock = function (options) {
 function dbFunc(params) {
     var locks = require('org/arangodb').db.locks;
     var lock = locks.documents([params.name]).documents[0];
-    var isExpired = lock && (new Date() - lock.date).valueOf() < params.expiration;
+    var isExpired = lock && (new Date() - lock.date).valueOf() >= params.expiration;
     var isValid = lock && lock.lockId === params.lockId;
 
     function checkErrors() {
@@ -69,7 +76,7 @@ function dbFunc(params) {
         if (!isValid) throw new Error('Lock invalid.');
     }
 
-    switch (params.operation) {
+    switch (params.action) {
         case 'acquire':
             if (lock && !isExpired) return false;
             if (!lock) lock = { _key: params.name };
@@ -91,5 +98,5 @@ function dbFunc(params) {
             return true;
     }
 
-    throw new Error('Invalid operation');
+    throw new Error('Invalid action');
 }
