@@ -30,9 +30,22 @@ lock.acquire({ server, name: 'lock1' })
     .then(function (release) {
         // lock acquired, do some stuff.
 
-        // release the lock
+        // release the lock after works done.
         return release();
     });
+```
+
+## Test
+
+```bash
+# 1. mount the database, recreate it if already mounted.
+npm run mount-db
+
+# 2. run the tests
+npm run test
+
+# 3. unmount the database
+npm run unmount-db
 ```
 
 ## Licence
