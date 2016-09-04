@@ -35,10 +35,12 @@ exports.acquire = function (options) {
             });
     }
 
-    function hearBeat() {
+    function heartBeat() {
         setTimeout(function () {
-            if (ping)
-                updateLockInDb('hearBeat').then(hearBeat);
+            if (ping) {
+                debug(`heartBeat lock '${name}''`);
+                updateLockInDb('heartBeat').then(heartBeat);
+            }
         }, expiration / 2);
     }
 
@@ -60,7 +62,7 @@ exports.acquire = function (options) {
     var promise = new Promise(acquireLock);
 
     return promise.then(function () {
-        hearBeat();
+        heartBeat();
         return releaseLock;
     });
 }
@@ -90,7 +92,7 @@ function dbFunc(params) {
             }
             return true;
 
-        case 'hearBeat':
+        case 'heartBeat':
             checkErrors();
             locks.replace(params.name, { date: new Date() });
             return true;
