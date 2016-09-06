@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/xploratics/arango-lock.svg)](https://travis-ci.org/xploratics/arango-lock)
+[![dependencies Status](https://david-dm.org/xploratics/arango-lock/status.svg)](https://david-dm.org/xploratics/arango-lock)
+[![devDependencies Status](https://david-dm.org/xploratics/arango-lock/dev-status.svg)](https://david-dm.org/xploratics/arango-lock?type=dev)
 
 # arango-lock
 Implements locking using arango database.
