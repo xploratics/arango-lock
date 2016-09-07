@@ -1,11 +1,11 @@
 {
   "name": "arango-lock",
   "version": "0.2.0",
-  "description": "\u0016Implements locking using arango database",
+  "description": "Implements locking using arango database",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "mount-db": "unmount-db & docker run --name arango-lock --rm -e \"ARANGO_ROOT_PASSWORD=pass\" -p 8529:8529 arangodb:latest",
+    "mount-db": "unmount-db & docker run --name arango-lock --rm -e ARANGO_ROOT_PASSWORD=pass -p 8529:8529 arangodb:latest",
     "unmount-db": "docker stop arango-lock & docker rm arango-lock"
   },
   "repository": {
