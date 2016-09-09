@@ -1,4 +1,5 @@
 var assert = require('assert');
+var dbFuncString = String(dbFunc);
 var debug = require('debug')('arango-lock');
 var Promise = require('bluebird');
 var shortid = require('shortid');
@@ -8,7 +9,6 @@ exports.acquire = function (options) {
     assert.ok(options, 'options is required');
 
     var expiration = options.expiration || 5000;
-    var func = String(dbFunc);
     var lockId = shortid();
     var name = options.name;
     var server = options.server;
@@ -56,7 +56,7 @@ exports.acquire = function (options) {
     }
 
     function updateLockInDb(action) {
-        return server.transaction({ write: ['locks'] }, func, { action, name, lockId, expiration });
+        return server.transaction({ write: ['locks'] }, dbFuncString, { action, name, lockId, expiration });
     }
 
     var promise = new Promise(acquireLock);
