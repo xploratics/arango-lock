@@ -18,17 +18,17 @@ Acquire a lock asynchronously allowing concurrent works to continue during locki
 
 #### options
 
-- server: arangojs database object
+- database: arangojs database object
 - name: name of the lock
 - expiration: expiration of the lock if no beat is received. (Default: 5000ms)
 
 #### example
 
 ```js
-var server = require('arangojs')({ url: 'root@127.0.0.1:8529' });
+var database = require('arangojs')({ url: 'root@127.0.0.1:8529' }).useDatabase('db');
 var lock = require('arango-lock');
 
-lock.acquire({ server, name: 'lock1' })
+lock.acquire({ database, name: 'lock1' })
     .then(function (release) {
         // lock acquired, do some stuff.
 

@@ -1,7 +1,6 @@
 var assert = require('assert');
 var dbFuncString = String(dbFunc);
 var debug = require('debug')('arango-lock');
-var Promise = require('bluebird');
 var shortid = require('shortid');
 var util = require('arango-util');
 
@@ -11,17 +10,18 @@ exports.acquire = function (options) {
     var expiration = options.expiration || 5000;
     var lockId = shortid();
     var name = options.name;
-    var server = options.server;
+    var database = options.database;
     var ping = true;
+    var locks = database.collection('locks');
 
     assert.ok(name, 'name is required');
     assert.ok(expiration >= 5000, 'expiration should be greater or equal to 5000ms');
-    assert.ok(server, 'server should be an arangodb database object');
+    assert.ok(database, 'database should be an arangodb database object');
 
     function acquireLock(resolve, reject) {
         debug(`acquiring lock '${name}'`);
 
-        util.ensureCollectionExists({ server: server, name: 'locks' })
+        util.ensureCollectionExists(locks)
             .then(() => updateLockInDb('acquire'))
             .catch(reject)
             .then(function (acquired) {
@@ -56,7 +56,7 @@ exports.acquire = function (options) {
     }
 
     function updateLockInDb(action) {
-        return server.transaction({ write: ['locks'] }, dbFuncString, { action, name, lockId, expiration });
+        return database.transaction({ write: ['locks'] }, dbFuncString, { action, name, lockId, expiration });
     }
 
     var promise = new Promise(acquireLock);

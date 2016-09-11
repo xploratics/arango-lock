@@ -1,6 +1,6 @@
 {
   "name": "arango-lock",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Implements locking using arango database",
   "main": "index.js",
   "scripts": {
@@ -27,8 +27,7 @@
   },
   "homepage": "https://github.com/xploratics/arango-lock#readme",
   "dependencies": {
-    "arango-util": "^0.1.2",
-    "bluebird": "^3.4.6",
+    "arango-util": "^0.2.0",
     "debug": "^2.2.0",
     "shortid": "^2.2.6"
   },
