@@ -27,7 +27,7 @@ Acquire a lock asynchronously allowing concurrent works to continue during locki
 #### example
 
 ```js
-var database = require('arangojs')({ url: 'root@127.0.0.1:8529' });
+var database = require('arangojs')({ url: 'http://localhost:8529' });
 var lock = require('arango-lock');
 
 database.useDatabase('db').useBasicAuth('root', 'pass');
