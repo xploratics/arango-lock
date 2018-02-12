@@ -1,6 +1,6 @@
 {
   "name": "arango-lock",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Implements locking using arango database",
   "main": "index.js",
   "scripts": {
@@ -27,13 +27,13 @@
   },
   "homepage": "https://github.com/xploratics/arango-lock#readme",
   "dependencies": {
-    "arango-util": "^0.2.0",
-    "debug": "^2.2.0",
-    "shortid": "^2.2.6"
+    "arango-util": "^0.3.1",
+    "debug": "^3.1.0",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
-    "arangojs": "^5.0.3",
-    "chai": "^3.5.0",
-    "mocha": "^3.0.2"
+    "arangojs": "^6.1.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0"
   }
 }

@@ -3,6 +3,7 @@
 [![devDependencies Status](https://david-dm.org/xploratics/arango-lock/dev-status.svg)](https://david-dm.org/xploratics/arango-lock?type=dev)
 
 # arango-lock
+
 Implements locking using arango database.
 
 ## Installation
@@ -14,6 +15,7 @@ npm install arango-lock
 ## Api
 
 ### lock
+
 Acquire a lock asynchronously allowing concurrent works to continue during locking.
 
 #### options
@@ -25,8 +27,10 @@ Acquire a lock asynchronously allowing concurrent works to continue during locki
 #### example
 
 ```js
-var database = require('arangojs')({ url: 'root@127.0.0.1:8529' }).useDatabase('db');
+var database = require('arangojs')({ url: 'root@127.0.0.1:8529' });
 var lock = require('arango-lock');
+
+database.useDatabase('db').useBasicAuth('root', 'pass');
 
 lock.acquire({ database, name: 'lock1' })
     .then(function (release) {
@@ -51,4 +55,5 @@ npm run unmount-db
 ```
 
 ## Licence
+
 MIT License
